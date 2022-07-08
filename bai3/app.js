@@ -1,16 +1,26 @@
 const app = Vue.createApp({
     data() {
         return {
-            step: 0,
-            counter: 0,
+            name: '',
+            counter: 10,
+            comfirmedName: ''
         };
     },
     methods: {
-        addStep() {
-            return this.counter += this.step;
+        confirmInput() {
+            this.comfirmedName = this.name;
         },
-        removeStep() {
-            return this.counter -= this.step;
+        setName(event, lastName) {
+            this.name = event.target.value + ' ' + lastName;
+        },
+        add(num) {
+            return this.counter += num;
+        },
+        reduce(num) {
+            return this.counter -= num;
+        },
+        submitForm() {
+            alert('Bạn vừa submit');
         }
     }
 });

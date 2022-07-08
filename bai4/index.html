@@ -17,14 +17,17 @@
         <h2>Events in Action</h2>
         <button v-on:click="add(10)">Add 10</button>
         <button v-on:click="reduce(5)">Subtract 5</button>
-        <p v-once>Starting Couter: {{ counter }}</p>
         <p>Result: {{ counter }}</p>
-        <input type="text" v-on:input="setName($event, 'Schwarzmüller')" v-on:keyup="confirmInput">
-        <p>Your Name: {{ comfirmedName }}</p>
-        <form v-on:submit.prevent="submitForm">
-            <input type="text">
-            <button>Sign Up</button>
-        </form>
+        <p>Watch</p>
+        <input type="text" v-model="watch_name" placeholder="First name"> <!--v-model = v-bind:value + v-on:input -->
+        <input type="text" v-model="watch_lastName" placeholder="Last name">
+        <button v-on:click="resetWatchInput">Reset Input</button>
+        <p>Your Name: {{ watch_fullname }}</p>
+        <p>computed</p>
+        <input type="text" v-model="computed_name" placeholder="First name"> <!--v-model = v-bind:value + v-on:input -->
+        <input type="text" v-model="computed_lastName" placeholder="Last name">
+        <button v-on:click="resetComputedInput">Reset Input</button>
+        <p>Your Name: {{ fullname }}</p>
     </section>
-    </body>
+</body>
 </html>
