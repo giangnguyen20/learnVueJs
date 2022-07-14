@@ -19,33 +19,38 @@
             <h2>Monster Health</h2>
             <div class="healthbar">
                 <div class="healthbar__value"
-                :style="{ 'width': monsterHeal + '%' }"></div>
+                :style="mosterBarStyle"></div>
             </div>
         </section>
         <section id="player" class="container">
             <h2>Your Health</h2>
             <div class="healthbar">
                 <div class="healthbar__value"
-                :style="{ 'width': playerHeal + '%'}"></div>
+                :style="playerBarStyle"></div>
             </div>
         </section>
-        <section id ="controls" v-if="playerHeal == 0">
-            <h2>You lost!</h2>
-            <button @click="playAgain">PLAY AGIAN</button>
-        </section>
-        <section id ="controls" v-else-if="monsterHeal == 0">
-            <h2>You win!</h2>
+        <section class="container" v-if="winner">
+            <h2>Game Over</h2>
+            <h3 v-if="winner === 'monster'">You lost!</h3>
+            <h3 v-else-if="winner === 'player'">You win!</h3>
+            <h3 v-else>It's a draw!</h3>
             <button @click="playAgain">PLAY AGIAN</button>
         </section>
         <section id="controls" v-else>
             <button @click="attackMonster">ATTACK</button>
-            <button>SPECIAL ATTACK</button>
+            <button :disabled="mayUseSpecialAttack" @click="specialAttackMonster">SPECIAL ATTACK</button>
             <button @click="healPlayer">HEAL</button>
-            <button>SURRENDER</button>
+            <button @click="surrender">SURRENDER</button>
         </section>
         <section id="log" class="container">
             <h2>Battle Log</h2>
-            <ul></ul>
+            <ul>
+                <li v-for="message in LogMessage">
+                    <span :class="[message.actionBy === 'player' ? 'log--player' : 'log--monster']">{{ message.actionBy }}</span> - 
+                    <span>{{ message.acctionType }}</span> : 
+                    <span :class="[ message.acctionType === 'heal' ? 'log--heal' : 'log--damage']">{{ message.acctionValue }}</span>
+                </li>
+            </ul>
         </section>
     </div>
 </body>
