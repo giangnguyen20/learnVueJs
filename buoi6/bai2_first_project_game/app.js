@@ -7,9 +7,45 @@ const app = Vue.createApp({
         return {
             playerHeal: 100,
             monsterHeal: 100,
-            heal: 15,
-            indexHeal: 0
+            currentRound: 3,
+            winner: null,
+            LogMessage: []
         };
+    },
+    watch: {
+        playerHeal(value) {
+            if (value <= 0 && this.monsterHeal <= 0) {
+                this.winner = 'draw';
+            } else if (value <= 0) {
+                this.winner = 'monster';
+            }
+        },
+        monsterHeal(value) {
+            if (value <= 0 && this.playerHeal <= 0) {
+                this.winner = 'draw';
+            } else if (value <= 0) {
+                this.winner = 'player';
+            }
+        }
+    },
+    computed: {
+        mosterBarStyle() {
+            if (this.monsterHeal < 0) {
+                return { width: 0 + '%'};
+            }
+
+            return {width: this.monsterHeal + '%'};
+        },
+        playerBarStyle() {
+            if (this.playerHeal < 0) {
+                return { width: 0 + '%'};
+            }
+
+            return {width: this.playerHeal + '%'};
+        },
+        mayUseSpecialAttack() {
+            return this.currentRound !== 3;
+        }
     },
     methods: {
         attackMonster() {
@@ -19,6 +55,7 @@ const app = Vue.createApp({
             } else {
                 this.monsterHeal -= attackValue;
             }
+            this.addLogMessage('player', 'attack', attackValue);
             this.attackPlayer();
         },
         attackPlayer() {
@@ -27,22 +64,44 @@ const app = Vue.createApp({
                 this.playerHeal = 0;
             } else {
                 this.playerHeal -= attackValue;
-                this.indexHeal++;
+            }
+            this.addLogMessage('moster', 'attack', attackValue);
+            
+            if (this.currentRound < 3) {
+                this.currentRound++;
             }
         },
+        specialAttackMonster() {
+            const attackValue = getRandomValue(10, 25);
+            this.monsterHeal -= attackValue;
+            this.addLogMessage('moster', 'attack special', attackValue);
+            this.currentRound = 0;
+        },
         healPlayer() {
-            if (this.indexHeal >= 3) {
-                if (this.playerHeal < 100) {
-                    this.playerHeal += this.heal;
-                    this.indexHeal = 0;
-                    if (this.playerHeal >= 100) {
-                        this.playerHeal = 100;
-                    }
-                }
+            const healValue = getRandomValue(8, 20);
+            if (this.playerHeal + healValue > 100) {
+                this.playerHeal = 100;
+            } else {
+                this.playerHeal += healValue;
             }
+            this.addLogMessage('player', 'heal', healValue);
+            this.attackPlayer();
+        },
+        surrender() {
+            this.winner = 'monster';
         },
         playAgain() {
             this.playerHeal = this.monsterHeal = 100;
+            this.currentRound = 3;
+            this.winner = null;
+            this.LogMessage = [];
+        },
+        addLogMessage(who, what, value) {
+            this.LogMessage.unshift({
+                actionBy: who,
+                acctionType: what,
+                acctionValue: value
+            });
         }
     }
 });
